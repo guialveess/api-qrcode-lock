@@ -40,19 +40,26 @@ let qrCodes: QRCodes = {
 let qrStatus = { locked: true, redirectUrl: "/bloqueado" };
 
 // Rota para desbloquear QR Code
+// Rota para desbloquear QR Code
 app.post("/unlock-qr", (req, res) => {
   const { qrId } = req.body;
   if (qrId === fixedQRCodeId) {
-    qrCodes[fixedQRCodeId].locked = false;
-    qrStatus.locked = false;
+    // Somente mudar o status se estiver bloqueado
+    if (qrCodes[fixedQRCodeId].locked) {
+      qrCodes[fixedQRCodeId].locked = false;
+      qrStatus.locked = false;
 
-    const status = {
-      locked: false,
-      redirectUrl: "https://psiuu-03.vercel.app/",
-    };
+      const status = {
+        locked: false,
+        redirectUrl: "https://psiuu-03.vercel.app/",
+      };
 
-    io.emit("qrUnlocked", status);
-    res.send("QR Code desbloqueado!");
+      io.emit("qrUnlocked", status);
+      res.send("QR Code desbloqueado!");
+    } else {
+      // Se já estiver desbloqueado, envie o status atual
+      res.send("QR Code já está desbloqueado.");
+    }
   } else {
     res.status(404).send("QR Code não encontrado.");
   }
