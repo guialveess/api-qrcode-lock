@@ -37,7 +37,7 @@ let qrCodes: QRCodes = {
   [fixedQRCodeId]: { locked: true, imageUrl: "" },
 };
 
-let qrStatus = { locked: true, redirectUrl: "/bloqueado" };
+let qrStatus = { locked: true, redirectUrl: "https://psiuu-03.vercel.app/" };
 
 // Rota para desbloquear QR Code
 // Rota para desbloquear QR Code
