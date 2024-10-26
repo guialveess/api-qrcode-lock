@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3000", // Substitua pela URL da sua aplicação
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -17,7 +17,7 @@ const io = new Server(server, {
 // Configuração do CORS
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3000", // Substitua pela URL da sua aplicação
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -75,13 +75,18 @@ app.post("/lock-qr", (req, res) => {
   }
 });
 
+// Rota para obter o status do QR Code
+app.get("/qr-status", (req, res) => {
+  res.json({ locked: qrStatus.locked });
+});
+
 // Evento de conexão do Socket.IO
 io.on("connection", (socket) => {
   console.log("Cliente conectado:", socket.id);
   socket.emit("qrStatus", qrStatus);
 });
 
-// Inicia o servidor na porta 5050
+// Inicia o servidor na porta 6767
 server.listen(6767, () => {
-  console.log("Servidor rodando na porta 5050");
+  console.log("Servidor rodando na porta 6767");
 });
