@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Substitua pela URL da sua aplicação
+    origin: "https://qrcode-lock-front.vercel.app/", // Substitua pela URL da sua aplicação
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -17,7 +17,7 @@ const io = new Server(server, {
 // Configuração do CORS
 app.use(
   cors({
-    origin: "http://localhost:3000", // Substitua pela URL da sua aplicação
+    origin: "https://qrcode-lock-front.vercel.app/", // Substitua pela URL da sua aplicação
     methods: ["GET", "POST"],
     credentials: true,
   })
