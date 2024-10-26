@@ -1,6 +1,5 @@
 import express from "express";
 import http from "http";
-import QRCode from "qrcode";
 import cors from "cors";
 import { Server } from "socket.io";
 
@@ -8,16 +7,15 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://qrcode-lock-front.vercel.app", // Substitua pela URL da sua aplicação
+    origin: "https://qrcode-lock-front.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-// Configuração do CORS
 app.use(
   cors({
-    origin: ["https://qrcode-lock-front.vercel.app", "http://localhost:3000"], // Adicione a URL local
+    origin: ["https://qrcode-lock-front.vercel.app", "http://localhost:3000"],
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -34,7 +32,6 @@ interface QRCodes {
   [key: string]: QRCodeStatus;
 }
 
-// ID fixo do QR Code
 const fixedQRCodeId = "myFixedQRCode";
 let qrCodes: QRCodes = {
   [fixedQRCodeId]: { locked: true, imageUrl: "" },
@@ -46,20 +43,16 @@ let qrStatus = { locked: true, redirectUrl: "/bloqueado" };
 app.post("/unlock-qr", (req, res) => {
   const { qrId } = req.body;
   if (qrId === fixedQRCodeId) {
-    // Apenas desbloquear se estiver bloqueado
-    if (qrCodes[fixedQRCodeId].locked) {
-      qrCodes[fixedQRCodeId].locked = false;
-      qrStatus.locked = false;
-      const status = {
-        locked: false,
-        redirectUrl: "https://psiuu-03.vercel.app/",
-      };
+    qrCodes[fixedQRCodeId].locked = false;
+    qrStatus.locked = false;
 
-      io.emit("qrUnlocked", status);
-      res.send("QR Code desbloqueado!");
-    } else {
-      res.send("QR Code já está desbloqueado.");
-    }
+    const status = {
+      locked: false,
+      redirectUrl: "https://psiuu-03.vercel.app/",
+    };
+
+    io.emit("qrUnlocked", status);
+    res.send("QR Code desbloqueado!");
   } else {
     res.status(404).send("QR Code não encontrado.");
   }
@@ -88,7 +81,13 @@ app.get("/qr-status", (req, res) => {
 // Evento de conexão do Socket.IO
 io.on("connection", (socket) => {
   console.log("Cliente conectado:", socket.id);
+  // Envia o status atual do QR Code ao cliente que se conecta
   socket.emit("qrStatus", qrStatus);
+
+  // Para garantir que o cliente receba o status atualizado ao desbloquear ou bloquear
+  socket.on("requestQrStatus", () => {
+    socket.emit("qrStatus", qrStatus);
+  });
 });
 
 // Inicia o servidor na porta 6767
