@@ -71,7 +71,10 @@ app.post("/lock-qr", (req, res) => {
   if (qrId === fixedQRCodeId) {
     qrCodes[fixedQRCodeId].locked = true;
     qrStatus.locked = true;
-    const status = { locked: true, redirectUrl: "/bloqueado" };
+    const status = {
+      locked: true,
+      redirectUrl: "https://psiuu-03.vercel.app/",
+    };
 
     io.emit("qrLocked", status);
     res.send("QR Code bloqueado!");
