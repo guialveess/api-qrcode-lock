@@ -82,6 +82,6 @@ io.on("connection", (socket) => {
 });
 
 // Inicia o servidor na porta 5050
-server.listen(5050, () => {
+server.listen(6767, () => {
   console.log("Servidor rodando na porta 5050");
 });
